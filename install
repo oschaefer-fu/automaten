@@ -18,7 +18,10 @@ if [ ! -d $MIRASYS/$LWBLIB ]; then
   mkdir $MIRASYS/$LWBLIB
 fi
 
+chown lewein:lewein $MIRASYS/$LWBLIB
 cp $FILELIST $MIRASYS/$LWBLIB/
 cd $MIRASYS/$LWBLIB
 mira -make $MAKELIST
+chown lewein:lewein automaten* ansiseq*
+
 echo "installation des Automaten-Pakets erfolgreich!"

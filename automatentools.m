@@ -34,8 +34,8 @@ unreachable :: automat -> [num]
 ||       Da die Laufzeit quadratisch von  der Anzahl  der Zustände und  linear
 ||       von der Länge des Alphabets abhängt, führt die Anwendung dieser Funk-
 ||       tion auf 'zu große' Automaten derzeit zu einem 'segmentation fault'.
-|| Erg.: In 'unreachable a' ist eine Liste  von  Zustandsindizes von Zuständen
-||       geliefert, die von q0 aus nicht erreichbar sind.
+|| Erg.: In 'unreachable a' ist eine Liste  von Zustandsindizes geliefert, die
+||       von q0 aus nicht erreichbar sind.
 
 reduce :: automat -> automat
 || Vor.: siehe unreachable

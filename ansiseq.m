@@ -1,5 +1,5 @@
 || Ansi-Sequenzen zum Setzen einiger Textattribue in der Konsole
-|| (c) Oliver Schäfer, FU-Berlin, 04.02.2016
+|| (c) Oliver Schäfer, FU-Berlin, 13.02.2016
 
 sequenz ::= F color | B color | A att | C common
 color   ::= Schwarz | Rot | Gruen | Gelb | Blau | Violett | Hellblau | Weiss

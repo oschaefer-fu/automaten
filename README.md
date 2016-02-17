@@ -20,15 +20,14 @@ Der zweite Weg macht alles in 4 Schritten per Hand:
       chmod lewein:lewein /usr/lib/miralib/lwb
 
 (3) Nun müssen noch die Zwischencodes (*.x-Dateien) erzeugt werden. Wegen
-    Schritt (2) kann dies nun auch als Benutzer lewein geschehen:
+    Schritt (2) kann dies nun auch als Benutzer lewein geschehen. Etwaige
+    Fehlermeldungen, die die Dateien automatenimpl.m betreffen, können
+    getrost ignoriert werden.
 
       mira -make /usr/lib/miralib/lwb/*.m
 
-    Etwaige Fehlermeldungen, die die Dateien automatenimpl.m betreffen, können
-    getrost ignoriert werden.
 
-(4) Nun kann in jeder Miranda-Datei mittels Include-Anweisung
+(4) Nun kann in jeder Miranda-Datei der ADT 'automat' verwendet werden, indem
+    man ihn inkludiert mittels der Anweisung:
 
       %include <lwb/automaten>
-
-    der ADT automat verwendet werden.

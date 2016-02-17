@@ -4,7 +4,7 @@
 || Erstellt in  Anlehnung  an das GO-Paket 'automaten'  aus  der Vorlesung zur
 || Theoretischen Informatik (SS 2014), um nach Umstellung der Kursstruktur von
 || einem 3-jährigen auf einen 2-jährigen Zyklus das Fehlen der notwendigen GO-
-|| Kenntnisse zu kompensieren.
+|| Kenntnisse zu umgehen.
 
 || Folgende Typen werden zur Zeit zur Verfügung gestellt:
 

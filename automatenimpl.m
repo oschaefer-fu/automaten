@@ -1,5 +1,5 @@
 || ----------------------------------------------------------------------------
-|| Beginn der Implementierung des ADT automat
+|| Beginn der Implementierung des ADT automat               (c) O.S. 13.02.2016
 || ----------------------------------------------------------------------------
 
 %include <lwb/ansiseq> || Farben und weitere Schriftattribute in der Konsole
