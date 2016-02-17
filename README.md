@@ -3,6 +3,14 @@ Miranda-Paket für endliche Akzeptoren in der LWB Informatik an der FU-Berlin
 
 Installationsanweisungen:
 
+Es gibt zwei Wege, das Automatenpaket zu installieren: Die automatische Version
+erfordert Vertrauen in den Autor des Paketes und ein Ausführen des Skriptes
+'install' als root:
+
+  # ./install
+
+Der zweite Weg macht alles in 4 Schritten per Hand:
+
 (1) Die Dateien müssen in das Verzeichnis /usr/lib/miralib/lwb kopiert werden.
     Ggf. muss das Verzeichnis als root erst erstellt werden.
 
