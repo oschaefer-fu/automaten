@@ -1,5 +1,5 @@
 || ----------------------------------------------------------------------------
-|| Beginn der Implementierung des ADT automat               (c) O.S. 13.02.2016
+|| Beginn der Implementierung des ADT automat               (c) O.S. 18.02.2016
 || ----------------------------------------------------------------------------
 
 %include <lwb/ansiseq> || Farben und weitere Schriftattribute in der Konsole
@@ -16,10 +16,11 @@ nea  = newAutomat NEA
 neaE = newAutomat NEAe
 
 newAutomat t qs zs ts
-  = error "Nur q0 darf Startzustand sein",   if (types Start qs -- [(0,Start)]) ~= []
-  = error "Zustandsliste unvollständig",     if ~consistent qs' ts'
-  = error "Epsilon-Übergänge nur in NEAe's", if hasEPS ts & t ~= NEAe
-  = (qs',zs',ts',fs',q0,t),                  otherwise
+  = error "Nur q0 darf Startzustand sein",         if (types Start qs -- [(0,Start)]) ~= []
+  = error "Zustandsliste unvollständig",           if ~consistent qs' ts'
+  = error "Übergangsfunktion ungültig",            if ~and [subset z zs|(qi,z,qj)<-ts]
+  = error "Epsilon-Übergänge nur in NEAe erlaubt", if hasEPS ts & t ~= NEAe
+  = (qs',zs',ts',fs',q0,t),                        otherwise
     where
     qs' = qsort qs,             if #(filter ((=0) . fst) qs) > 0
         = qsort ((0,Start):qs), otherwise
