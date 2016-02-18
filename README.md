@@ -3,31 +3,33 @@ Miranda-Paket für endliche Akzeptoren in der LWB Informatik an der FU-Berlin
 
 Installationsanweisungen:
 
-Es gibt zwei Wege, das Automatenpaket zu installieren: Die automatische Version
-erfordert Vertrauen in den Autor des Paketes und ein Ausführen des Skriptes
-'install' als root:
+Es gibt zwei Wege, das Automatenpaket zu installieren:
 
-  # ./install
+(1) Die automatische Version
 
-Der zweite Weg macht alles in 4 Schritten per Hand:
+    Erfordert Vertrauen in den Autor des Paketes und ein Ausführen des Skriptes
+    'install' als root:
 
-(1) Die Dateien müssen in das Verzeichnis /usr/lib/miralib/lwb kopiert werden.
-    Ggf. muss das Verzeichnis als root erst erstellt werden.
+    # ./install
 
-(2) Für zukünftige Updates ist es günstig, das Verzeichnis lewein zu vermachen.
-    Dazu gibt man als root an der Kommandozeile
+(2) Der zweite Weg macht alles in 4 Schritten per Hand:
 
-      chmod lewein:lewein /usr/lib/miralib/lwb
+    (a) Die Dateien müssen in das Verzeichnis /usr/lib/miralib/lwb kopiert werden.
+        Ggf. muss das Verzeichnis als root erst erstellt werden.
 
-(3) Nun müssen noch die Zwischencodes (*.x-Dateien) erzeugt werden. Wegen
-    Schritt (2) kann dies nun auch als Benutzer lewein geschehen. Etwaige
-    Fehlermeldungen, die die Dateien automatenimpl.m betreffen, können
-    getrost ignoriert werden.
+    (b) Für zukünftige Updates ist es günstig, das Verzeichnis lewein zu vermachen.
+        Dazu gibt man als root an der Kommandozeile
 
-      mira -make /usr/lib/miralib/lwb/*.m
+          chmod lewein:lewein /usr/lib/miralib/lwb
 
+    (c) Nun müssen noch die Zwischencodes (*.x-Dateien) erzeugt werden. Wegen
+        Schritt (b) kann dies nun auch als Benutzer lewein geschehen. Etwaige
+        Fehlermeldungen, die die Dateien automatenimpl.m betreffen, können
+        getrost ignoriert werden.
 
-(4) Nun kann in jeder Miranda-Datei der ADT 'automat' verwendet werden, indem
-    man ihn inkludiert mittels der Anweisung:
+          mira -make /usr/lib/miralib/lwb/*.m
 
-      %include <lwb/automaten>
+    (d) Nun kann in jeder Miranda-Datei der ADT 'automat' verwendet werden, indem
+        man ihn inkludiert mittels der Anweisung:
+
+          %include <lwb/automaten>
