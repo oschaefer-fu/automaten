@@ -4,23 +4,22 @@
 
 # (c) Oliver Schäfer, FU-Berlin, 17.02.2016
 
-MIRASYS=/usr/lib/miralib
-LWBLIB=lwb
+LWBMIRALIB=/usr/lib/miralib/lwb
 MAKELIST="automaten.m automatentools.m automatentoolsimpl.m ansiseq.m"
 FILELIST="automaten.m automatenimpl.m automatentools.m automatentoolsimpl.m ansiseq.m"
 
-if [ $UID != 0 ]; then
-  echo "Skript muss als root ausgeführt werden!"
-  exit 1
+if [ ! -d $LWBMIRALIB ]; then
+  if [ $UID != 0 ]; then
+    echo "Skript muss als root ausgeführt werden!"
+    exit 1
+  else
+    mkdir $LWBMIRALIB
+    chown lewein:lewein $LWBMIRALIB
+  fi
 fi
 
-if [ ! -d $MIRASYS/$LWBLIB ]; then
-  mkdir $MIRASYS/$LWBLIB
-fi
-
-chown lewein:lewein $MIRASYS/$LWBLIB
-cp $FILELIST $MIRASYS/$LWBLIB/
-cd $MIRASYS/$LWBLIB
+cp $FILELIST $LWBMIRALIB/
+cd $LWBMIRALIB
 mira -make $MAKELIST
 chown lewein:lewein automaten* ansiseq*
 
