@@ -1,12 +1,15 @@
 #!/bin/bash
+#
 # Skript zur automatischen Installation des Miranda Automaten-Pakets
-# im Miranda-Systemverzeichnis - es muss als root ausgeführt werden!
-
-# (c) Oliver Schäfer, FU-Berlin, 17.02.2016
+# im Miranda-Systemverzeichnis - es muss bei der ersten Installation
+# als root ausgeführt werden, sonst genügen Standard-Benutzerrechte.
+#
+# (c) Oliver Schäfer, FU-Berlin, 18.02.2016
 
 LWBMIRALIB=/usr/lib/miralib/lwb
+
 MAKELIST="automaten.m automatentools.m automatentoolsimpl.m ansiseq.m"
-FILELIST="automaten.m automatenimpl.m automatentools.m automatentoolsimpl.m ansiseq.m"
+FILELIST="automaten*.m ansiseq.m"
 
 if [ ! -d $LWBMIRALIB ]; then
   if [ $UID != 0 ]; then
