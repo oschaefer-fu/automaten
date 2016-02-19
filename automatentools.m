@@ -1,5 +1,5 @@
 || ======================= Miranda-Paket 'automatentools' ====================
-|| (c) Oliver Schäfer                                         13. Februar 2016
+|| (c) Oliver Schäfer                                             Februar 2016
 || ===========================================================================
 
 deleps :: automat -> automat

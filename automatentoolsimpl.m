@@ -1,8 +1,8 @@
-|| ---------------------------------------------------------------------------------
-|| (c) Oliver Schäfer, FU-Berlin, 13.02.2016
-|| ---------------------------------------------------------------------------------
+|| -----------------------------
+|| (c) Oliver Schäfer, FU-Berlin
+|| -----------------------------
 %include <lwb/automaten>
-%export unreachable reduce deleps equivalent powersetConstr minimize minimize'
+%export unreachable reduce deleps equivalent powersetConstr minimize
 
 powersetConstr = powersetConstr' . deleps
 powersetConstr' a
