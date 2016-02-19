@@ -4,7 +4,7 @@
 # im Miranda-Systemverzeichnis - es muss bei der ersten Installation
 # als root ausgeführt werden, sonst genügen Standard-Benutzerrechte.
 #
-# (c) Oliver Schäfer, FU-Berlin, 18.02.2016
+# (c) Oliver Schäfer, FU-Berlin, im Februar 2016
 
 LWBMIRALIB=/usr/lib/miralib/lwb
 
@@ -17,6 +17,12 @@ if [ ! -d $LWBMIRALIB ]; then
     exit 1
   else
     mkdir $LWBMIRALIB
+    chown lewein:lewein $LWBMIRALIB
+  fi
+else
+  if [ ! -O $LWBMIRALIB ]; then
+    echo "Skript muss als root ausgeführt werden!"
+  else
     chown lewein:lewein $LWBMIRALIB
   fi
 fi

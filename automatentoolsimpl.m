@@ -42,7 +42,6 @@ powersetConstr' a
                   f qi zi (qi',zi',qj') = qi=qi' & zi=zi'
                   thd3 (x,y,z) = z
 
-
 minimize' a = error "Automat kein DEA (minimize)",         if ~isdea a
             = a,                                           if equivalent a = []
             = dea (states a') (sigma a') (transitions a'), otherwise
@@ -172,14 +171,21 @@ reachable a
   = reachable' a (sigma a) [0]    []                [0]             (#(states a)-1)
 ||                         Start  aktuell erreicht  alle erreichten max. Wortlänge
     where
+    alle = sort (map fst (states a))
     reachable' a (z:zs) (q:qs) akt all (n+1)
-      = reachable' a zs (q:qs) ((fst . hd) (startFrom a q [z]):akt) all (n+1)
+      = reachable' a zs (q:qs) (insert q' akt) all (n+1)
+        where
+        q' = (fst . hd) (startFrom a q [z])
+        insert x []     = [x]
+        insert x (y:ys) = x:y:ys,        if x < y
+                        = y:insert x ys, if x > y
+                        = y:ys,          if x = y
     reachable' a [] (q:qs) akt all (n+1)
       = reachable' a (sigma a) qs akt all (n+1)
     reachable' a (z:zs) [] akt all (n+1)
-      = reachable' a (sigma a) akt [] (all++akt) n
-    reachable' a (z:zs) (q:qs) akt all 0
-      = mkset all
+      = reachable' a (sigma a) akt [] (all++akt) n, if (sort . mkset) (all++akt) ~= alle
+      = alle,                                       otherwise
+    reachable' a (z:zs) (q:qs) akt all 0 = mkset all
 
 unreachable a = [n|(n,t)<-states a] -- (reachable a)
 
