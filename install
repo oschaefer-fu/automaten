@@ -20,7 +20,7 @@ if [ ! -d $LWBMIRALIB ]; then
     chown lewein:lewein $LWBMIRALIB
   fi
 else
-  if [ ! -O $LWBMIRALIB ]; then
+  if [ ! -O $LWBMIRALIB ] && [ $UID != 0 ]; then
     echo "Skript muss als root ausgeführt werden!"
     exit 1
   else
