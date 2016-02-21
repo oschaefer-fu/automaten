@@ -35,4 +35,12 @@ reduce :: automat -> automat
 ||       akzeptierender Automat geliefert, der um die in  a unerreichbaren Zu-
 ||       stände verkürzt ist.
 
+writeToMirandaFile :: automat -> [char] -> [char] -> bool -> [sys_message]
+|| Vor.: Der aktuelle Benutzer hat Schreibrechte im aktuellen Verzeichnis.
+|| Erg.: In 'writeToFile a name file  mtype' ist  eine Datei angelegt, die die
+||       Miranda-Definition des Automaten a, gebunden an die  Variable mit dem
+||       Namen name enthält. Für mtype = True ist  der Datei noch  die zum Im-
+||       port des Automatenpakets notwendige include-Anweisung  vorangestellt,
+||       so dass die Datei direkt in Miranda weiterverarbeitet werden kann.
+
 %insert "automatentoolsimpl.m"

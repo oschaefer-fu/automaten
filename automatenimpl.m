@@ -11,6 +11,12 @@ atyp ::= DEA | NEA | NEAe
 isdea a = sort [(qi,z)|(qi,ti)<-qs;z<-zs] = sort [(qi,z)|(qi,z,qj)<-ts]
           where (qs,zs,ts,fs,q0,t) = a
 
+isnea a = t = NEA
+          where (qs,zs,ts,fs,q0,t) = a
+
+isneaE a = t = NEAe
+           where (qs,zs,ts,fs,q0,t) = a
+
 dea  = newAutomat DEA
 nea  = newAutomat NEA
 neaE = newAutomat NEAe

@@ -2,7 +2,45 @@
 || (c) Oliver Schäfer, FU-Berlin
 || -----------------------------
 %include <lwb/automaten>
-%export unreachable reduce deleps equivalent powersetConstr minimize
+%export unreachable reduce deleps equivalent powersetConstr minimize writeToMirandaFile
+
+writeToMirandaFile a name file mtype
+  = [Tofile file astring]
+    where
+    astring = preambel ++
+              name ++ " = " ++ atype ++ qsshow (show (states a)) ++ "\n" ++
+              tab1 ++ "   " ++ tab2  ++ show   (sigma a)         ++ "\n" ++
+              tab1 ++ "   " ++ tab2  ++ tsshow (tsort' (transitions a))
+    tab1 = rep (#name) ' '
+    tab2 = rep (#atype) ' '
+    qsshow []     = error "Automat ohne Zustände (writeToMirandaFile)"
+    qsshow (c:cs) = qsshow' (c:cs) []
+    qsshow' []           akk = akk
+    qsshow' (')':',':cs) akk = qsshow' cs (akk ++ "),\n" ++ tab1 ++ "   " ++ tab2 ++ " ")
+    qsshow' (c:cs)       akk = qsshow' cs (akk ++ [c])
+    tsshow []     = error "Automat ohne Übergänge (writeToMirandaFile)"
+    tsshow (t:ts) = (("["++) . (++"]")) (tsshow' ts t)
+    tsshow' [] t = tshow t
+    tsshow' ((qi,zs,qj):ts) (qi',zs',qj')
+      = tsshow' ts (qi',zs'++zs,qj'),                        if qi = qi' & qj  = qj'
+      = tshow (qi',zs',qj') ++ "," ++ tsshow' ts (qi,zs,qj), if qi = qi' & qj ~= qj'
+      = tshow (qi',zs',qj') ++ ",\n" ++ tab1 ++ "   " ++ tab2 ++ " " ++ tsshow' ts (qi,zs,qj), otherwise
+    tshow (x,y,z) = "(" ++ shownum x ++ "," ++ tochar y ++ "," ++ shownum z ++ ")"
+    tochar x = [decode 34] ++ x ++ [decode 34]
+    preambel = "%include <lwb/automaten>\n\n", if mtype
+             = "",                             otherwise
+    atype = "dea ",                                                if isdea a
+          = "nea ",                                                if isnea a
+          = "neaE ",                                               if isneaE a
+          = error "Automatentyp undefiniert (writeToMirandaFile)", otherwise
+
+tsort' = foldr tinsert []
+         where
+         tinsert (qi,z,qj) []                = [(qi,z,qj)]
+         tinsert (qi,z,qj) ((qi',z',qj'):ts) = (qi,z,qj):(qi',z',qj'):ts,         if qi < qi'
+                                             = (qi,z,qj):(qi',z',qj'):ts,         if qi = qi' & qj < qj'
+                                             = (qi,z,qj):(qi',z',qj'):ts,         if qi = qi' & qj = qj' & z < z'
+                                             = (qi',z',qj'):tinsert (qi,z,qj) ts, otherwise
 
 powersetConstr = powersetConstr' . deleps
 powersetConstr' a
