@@ -43,4 +43,13 @@ writeToMirandaFile :: automat -> [char] -> [char] -> bool -> [sys_message]
 ||       port des Automatenpakets notwendige include-Anweisung  vorangestellt,
 ||       so dass die Datei direkt in Miranda weiterverarbeitet werden kann.
 
+showConfigurations :: automat -> word -> [char]
+|| Vor.: In 'showConfigurations a w' ist  w  in  der  Kleene'schen Hülle von a
+||       enthalten.
+|| Erg.: Eine  Zeichenkette,  die alle  Konfigurationen (qi,wi)  beginnend bei
+||       der Startkonfiguration (q0,w) und  endend  bei allen  Konfigurationen
+||       (qi,e) mit dem leeren Wort e(psilon).
+||       Konfigurationen (qi,e) mit qi<-F sind  dabei grün,  solche mit qi~<-F
+||       rot dargestellt.
+
 %insert "automatentoolsimpl.m"

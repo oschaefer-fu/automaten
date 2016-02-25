@@ -1,8 +1,32 @@
 || -----------------------------
 || (c) Oliver Schäfer, FU-Berlin
 || -----------------------------
+%include <lwb/ansiseq>
 %include <lwb/automaten>
-%export unreachable reduce deleps equivalent powersetConstr minimize writeToMirandaFile
+%export unreachable reduce deleps equivalent powersetConstr minimize
+        writeToMirandaFile showConfigurations
+
+showConfigurations a w
+  = headline ++ "\n" ++ sC [] w [0]
+    where
+    width = max2 (#w) (#"Wort")
+    headline      = rjustify (width+3) "Wort" ++ " | " ++ "    Zustand" ++ "\n" ++
+                    "   " ++ rep width '-' ++ "-+-" ++ rep 11 '-'
+    sC zs' []     qs' = "   " ++ vfaerben zs' Gelb ++            " | " ++ showStates False qs' ++ "\n"
+    sC zs' (z:zs) qs' = "   " ++ vfaerben zs' Gelb ++ (z:zs ) ++ " | " ++ showStates True  qs' ++ "\n" ++
+                        sC (zs' ++ [z]) zs qs''
+                        where
+                        qs'' = map fst (startFrom a q [z])
+                        q    = hd qs'
+    showStates t [x] = vfaerben (rjustify 3 ("q" ++ shownum x) ++ " " ++ stat) color
+                       where
+                       styp = (snd . hd) [q|q<-states a;fst q = x]
+                       (stat,color) = ("Inner",  Gelb),  if  t & styp = Inner
+                                    = ("Start",  Gelb),  if  t & styp = Start
+                                    = ("Accept", Gelb),  if  t & styp = Accept
+                                    = ("Inner",  Rot),   if ~t & styp = Inner
+                                    = ("Start",  Rot),   if ~t & styp = Start
+                                    = ("Accept", Gruen), if ~t & styp = Accept
 
 writeToMirandaFile a name file mtype
   = [Tofile file astring]
