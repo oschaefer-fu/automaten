@@ -9,24 +9,31 @@
 showConfigurations a w
   = headline ++ "\n" ++ sC [] w [0]
     where
-    width = max2 (#w) (#"Wort")
-    headline      = rjustify (width+3) "Wort" ++ " | " ++ "    Zustand" ++ "\n" ++
-                    "   " ++ rep width '-' ++ "-+-" ++ rep 11 '-'
-    sC zs' []     qs' = "   " ++ vfaerben zs' Gelb ++            " | " ++ showStates False qs' ++ "\n"
-    sC zs' (z:zs) qs' = "   " ++ vfaerben zs' Gelb ++ (z:zs ) ++ " | " ++ showStates True  qs' ++ "\n" ++
+    width = max2 (#w) (#"Restwort")
+    fill  = #"Restwort" - #w, if #w <#"Restwort"
+          = 0,                otherwise
+    headline = rjustify (width+3) "Restwort" ++ " | " ++ "    Zustand" ++ "\n" ++
+               rep (width+3) '-'             ++ "-+-" ++ rep 11 '-'
+    sC zs' zs     []  = rep (fill+3) ' ' ++ vfaerben zs' Hellblau ++ zs     ++ " | " ++ vfaerben "--- Sackgasse" Rot
+    sC zs' []     qs' = rep (fill+3) ' ' ++ vfaerben zs' Hellblau ++           " | " ++ showStates False qs' ++ "\n"
+    sC zs' (z:zs) qs' = rep (fill+3) ' ' ++ vfaerben zs' Hellblau ++ (z:zs) ++ " | " ++ showStates True  qs' ++ "\n" ++
                         sC (zs' ++ [z]) zs qs''
                         where
-                        qs'' = map fst (startFrom a q [z])
-                        q    = hd qs'
-    showStates t [x] = vfaerben (rjustify 3 ("q" ++ shownum x) ++ " " ++ stat) color
-                       where
-                       styp = (snd . hd) [q|q<-states a;fst q = x]
-                       (stat,color) = ("Inner",  Gelb),  if  t & styp = Inner
-                                    = ("Start",  Gelb),  if  t & styp = Start
-                                    = ("Accept", Gelb),  if  t & styp = Accept
-                                    = ("Inner",  Rot),   if ~t & styp = Inner
-                                    = ("Start",  Rot),   if ~t & styp = Start
-                                    = ("Accept", Gruen), if ~t & styp = Accept
+                        qs'' = (sort . mkset . concat) [map fst (startFrom a q [z])|q<-qs']
+    showStates t (x:xs)
+      = vfaerben (rjustify 3 ("q" ++ shownum x) ++ " " ++ stat x) (color x t) ++ showStates' t xs
+        where
+        showStates' t []     = []
+        showStates' t (x:xs) = "\n" ++ "   " ++ rep width ' ' ++ " | " ++
+                               vfaerben (rjustify 3 ("q" ++ shownum x) ++ " " ++ stat x) (color x t) ++
+                               showStates' t xs
+        stat x = "Inner",  if styp x = Inner
+               = "Start",  if styp x = Start
+               = "Accept", if styp x = Accept
+        color x t = Hellblau,  if  t
+                  = Rot,       if ~t & (styp x = Inner \/ styp x = Start)
+                  = Gruen,     if ~t &  styp x = Accept
+        styp x = (snd . hd) [q|q<-states a;fst q = x]
 
 writeToMirandaFile a name file mtype
   = [Tofile file astring]
