@@ -20,7 +20,7 @@ Es gibt zwei Wege, das Automatenpaket zu installieren:
     (b) Für zukünftige Updates ist es günstig, das Verzeichnis lewein zu vermachen.
         Dazu gibt man als root an der Kommandozeile
 
-          chmod lewein:lewein /usr/lib/miralib/lwb
+          chown lewein:lewein /usr/lib/miralib/lwb
 
     (c) Nun müssen noch die Zwischencodes (*.x-Dateien) erzeugt werden. Wegen
         Schritt (b) kann dies nun auch als Benutzer lewein geschehen. Etwaige

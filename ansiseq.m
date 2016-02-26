@@ -1,5 +1,5 @@
 || Ansi-Sequenzen zum Setzen einiger Textattribue in der Konsole
-|| (c) Oliver Schäfer, FU-Berlin, 13.02.2016
+|| (c) Oliver Schäfer, FU-Berlin, Februar 2016
 
 sequenz ::= F color | B color | A att | C common
 color   ::= Schwarz | Rot | Gruen | Gelb | Blau | Violett | Hellblau | Weiss
@@ -11,7 +11,10 @@ vfaerben text farbe = ansiseq (F farbe) ++ text ++ ansiseq (C Reset)
 hfaerben text farbe = ansiseq (B farbe) ++ text ++ ansiseq (C Reset)
 
 fett :: [char] -> [char]
-fett text = ansiseq (A Fett) ++ text ++ ansiseq (A Normal)
+fett text = attribut text Fett
+
+attribut :: [char] -> att -> [char]
+attribut text a = ansiseq (A a) ++ text ++ ansiseq (A Normal)
 
 positioniere :: num -> num -> [char]
 positioniere x y = ['\27'] ++ "[" ++ shownum x ++ ";" ++ shownum y ++ "H"
