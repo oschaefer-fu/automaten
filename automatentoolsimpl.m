@@ -7,30 +7,45 @@
         writeToMirandaFile showConfigurations
 
 showConfigurations a w
-  = headline ++ "\n" ++ sC [] w [0]
+  = headline ++ "\n" ++ sC [] w (map fst (startFrom a 0 "")) ++ bottomline
     where
+    sColor = Gelb
+    iColor = Hellblau
+    aColor = Gruen
+    wColor = Violett
     width = max2 (#w) (#"Restwort")
     fill  = #"Restwort" - #w, if #w <#"Restwort"
           = 0,                otherwise
-    headline = rjustify (width+3) "Restwort" ++ " | " ++ "    Zustand" ++ "\n" ++
-               rep (width+3) '-'             ++ "-+-" ++ rep 11 '-'
-    sC zs' zs     []  = rep (fill+3) ' ' ++ vfaerben zs' Hellblau ++ zs     ++ " | " ++ vfaerben "--- Sackgasse" Rot
-    sC zs' []     qs' = rep (fill+3) ' ' ++ vfaerben zs' Hellblau ++           " | " ++ showStates False qs' ++ "\n"
-    sC zs' (z:zs) qs' = rep (fill+3) ' ' ++ vfaerben zs' Hellblau ++ (z:zs) ++ " | " ++ showStates True  qs' ++ "\n" ++
+    zText = "aktueller Zustand",                                     if isdea a
+          = "aktuelle Zustände",                                     if isnea a \/ isneaE a
+          = error "undefinierter Automatentyp (showConfigurations)", otherwise
+    headline = rjustify (width+3) "Restwort" ++ " | " ++ zText ++ "\n" ++
+               "   " ++ rep width '-' ++ "-+-" ++ rep 17 '-'
+    bottomline = "   " ++ rep width '-' ++ "-+-" ++ rep 17 '-' ++ "\n" ++
+                 "   " ++ cjustify (width+20+3*#(vfaerben "" Weiss)) || ANSI-Sequenzen zählen mit!!!
+                          (vfaerben "Start"  sColor ++ " - " ++
+                           vfaerben "Inner"  iColor ++ " - " ++
+                           vfaerben "Accept" aColor) ++ "\n"
+    sC zs' zs     []  = []
+    sC zs' []     qs' = rep (fill+3) ' ' ++ vfaerben zs' wColor ++           " | " ++ showStates False qs' ++ "\n"
+    sC zs' (z:zs) qs' = rep (fill+3) ' ' ++ vfaerben zs' wColor ++ (z:zs) ++ " | " ++ showStates True  qs' ++ "\n" ++
                         sC (zs' ++ [z]) zs qs''
                         where
                         qs'' = (sort . mkset . concat) [map fst (startFrom a q [z])|q<-qs']
-    showStates t (x:xs)
-      = vfaerben (rjustify 3 ("q" ++ shownum x) ++ " " ++ stat x) (color x t) ++ showStates' t xs
+    showStates t xs
+      = f (showStates' t xs)
         where
-        showStates' t []     = []
-        showStates' t (x:xs) = "\n" ++ "   " ++ rep width ' ' ++ " | " ++
-                               vfaerben (rjustify 3 ("q" ++ shownum x) ++ " " ++ stat x) (color x t) ++
-                               showStates' t xs
-        stat x = "Inner",  if styp x = Inner
-               = "Start",  if styp x = Start
-               = "Accept", if styp x = Accept
-        color x t = Hellblau,  if  t
+        f = ("{"++) . (++"}"),                                       if isnea a \/ isneaE a
+          = id,                                                      if isdea a
+          = error "undefinierter Automatentyp (showConfigurations)", otherwise
+        showStates' t     []       = []
+        showStates' True  [x]      = vfaerben ("q" ++ shownum x) (color x t)
+        showStates' True  (x:y:xs) = vfaerben ("q" ++ shownum x) (color x t) ++ "," ++ showStates' t (y:xs)
+        showStates' False [x]      = hfaerben ("q" ++ shownum x) (color x t)
+        showStates' False (x:y:xs) = hfaerben ("q" ++ shownum x) (color x t) ++ "," ++ showStates' t (y:xs)
+        color x t = sColor,    if  t &  styp x = Start
+                  = aColor,    if  t &  styp x = Accept
+                  = iColor,    if  t &  styp x = Inner
                   = Rot,       if ~t & (styp x = Inner \/ styp x = Start)
                   = Gruen,     if ~t &  styp x = Accept
         styp x = (snd . hd) [q|q<-states a;fst q = x]
