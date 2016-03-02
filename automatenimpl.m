@@ -1,5 +1,5 @@
 || ----------------------------------------------------------------------------
-|| Beginn der Implementierung des ADT automat               (c) O.S. 18.02.2016
+|| Implementierung des ADT automat                   (c) O.S. Februar/März 2016
 || ----------------------------------------------------------------------------
 
 %include <lwb/ansiseq> || Farben und weitere Schriftattribute in der Konsole
@@ -40,28 +40,32 @@ newAutomat t qs zs ts
 accepts a ws = or ((map ((=Accept) . snd)) (startFrom a 0 ws))
 
 startFrom a n ws
-  = error "Automat ohne Endzustand",                      if fs = []
-  = error "Angegebener Zustand existiert nicht",          if ~member (map fst qs) n
-  = error "Eingegebenes Wort nicht in Kleen'scher Hülle", if ~inKleen (split ws) zs
-  = mkset (step ts (split ws) [n]),                       otherwise
+  = error "Automat ohne Endzustand",                       if fs = []
+  = error "Angegebener Zustand existiert nicht",           if ~member (map fst qs) n
+  = error "Eingegebenes Wort nicht in Kleene'scher Hülle", if ~inKleen (split ws) zs
+  = mkset (step ts (split ws) [n]),                        otherwise
     where
     (qs,zs,ts,fs,q0,t)    = a
     inKleen []     zs     = True
     inKleen (w:ws) []     = False
     inKleen (w:ws) (z:zs) = inKleen (filter (~=z) (w:ws)) zs
-    epsShape qis = [qj|n<-qis;(qi,z,qj)<-ts;z="";qi=n]
+    epsShape qis = epsShape qis', if #qis ~= #qis'
+                 = qis,           otherwise
+                   where
+                   epsStep = [qj|n<-qis;(qi,"",qj)<-ts;qi=n]
+                   qis' = mkset (qis ++ epsStep)
     step ts ws     []  = []
     step ts []     ixs = [(n,t)|(n,t)<-qs;i<-(ixs ++ epsShape ixs);i=n]
-    step ts (w:ws) ixs = step ts ws followQs ++ step ts (w:ws) (epsShape ixs)
+    step ts (w:ws) ixs = step' ts (w:ws) (ixs ++ epsShape ixs)
                          where
-                         followQs = (mkset . concat) [nextQ ts n w|n<-ixs]
+                         step' ts (w:ws) xs = step ts ws ((mkset . concat) [nextQ ts n w|n<-xs])
  
 addTransition    a (qi,z,qj) = modifyTransition a (qi,z,qj) True
 changeTransition a (qi,z,qj) = modifyTransition a (qi,z,qj) False
 
 modifyTransition a (qi,z,qj) canADD
-  = error "Übergangssymbol kein Element des Alphabets", if  ~member (concat zs) (hd z)
-  = error "Zustandsnummer(n) gibt es nicht",            if  ~subset [qi,qj] (map fst qs)
+  = error "Übergangssymbol kein Element des Alphabets", if ~member (concat zs) (hd z)
+  = error "Zustandsnummer(n) gibt es nicht",            if ~subset [qi,qj] (map fst qs)
   = error "Übergang (qi,z,_) bereits vorhanden",        if  canADD & transList ~= []
   = error "Übergang (qi,z,_) existiert noch nicht",     if ~canADD & transList  = []
   = dea  qs' (concat zs) ts',                           if t = DEA  & ~member ts (qi,z,qj)
@@ -72,7 +76,6 @@ modifyTransition a (qi,z,qj) canADD
     where
     (qs,zs,ts,fs,q0,t) = a
     transList = [(a,b,c)|(a,b,c)<-ts;a=qi;b=z]
-||    qs' = filter ((~= Start) . snd) qs
     qs' = qs
     ts' = tsort t ((qi,z,qj):(ts -- transList))
 
@@ -83,7 +86,6 @@ deleteTransition a qi z
   = error "unvorhergesehener Fall in deleteTransistion", otherwise
     where
     (qs,zs,ts,fs,q0,t) = a
-||    qs' = filter ((~= Start) . snd) qs
     qs' = qs
     ts' = [(qi',z',qj')|(qi',z',qj')<-ts;~(qi'=qi & z'=z)]
 
@@ -112,7 +114,6 @@ deleteState a n
   = error "unvorhergesehener Fall in deleteState", otherwise
     where
     (qs,zs,ts,fs,q0,t) = a
-||    qs' = filter ((~=n) . fst) (qs -- [(0,Start)])
     qs' = filter ((~=n) . fst) qs
     ts' = filter p ts
           where p (qi,z,qj) = qi ~= n & qj ~= n
