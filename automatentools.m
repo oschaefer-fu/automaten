@@ -52,4 +52,22 @@ showConfigurations :: automat -> word -> [char]
 ||       Konfigurationen (qi,e) mit qi<-F sind  dabei grün,  solche mit qi~<-F
 ||       rot dargestellt.
 
+regexpAND :: automat -> automat -> automat
+|| Vor.: keine
+|| Erg.: In 'regexAND a b' ist ein NEAe c geliefert, der all die Wörter vw ak-
+||       zeptiert, für die v von  a UND  w von b akzeptiert werden. Das Alpha-
+||       bet von c ist die Vereinigung der Alphabete von a und b.
+
+regexpOR :: automat -> automat -> automat
+|| Vor.: keine
+|| Erg.: In 'regexOR a b' ist ein NEAe geliefert, der all die  Wörter w akzep-
+||       tiert, die von a ODER von b akzeptiert werden. Das Alphabet des Auto-
+||       maten ist die Vereinigung der Alphabete von a und b.
+
+regexpSTAR :: automat -> automat
+|| Vor.: keine
+|| Erg.: In 'regexSTAR a' ist ein NEAe geliefert, der beliebige - auch keinma-
+||       lige - Wiederholungen von  Wörtern akzeptiert, die  a akzeptiert. Das
+||       Alphabet des Automaten ist das gleiche wie das von a.
+
 %insert "automatentoolsimpl.m"
