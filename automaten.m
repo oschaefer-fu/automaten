@@ -105,9 +105,17 @@ with
   isdea :: automat -> bool
   || Vor.: -
   || Erg.: G.d.w. in 'isdea a' a ein deterministischer, endlicher Automat ist,
-  ||       ist True geliefert. Dies ist dann der Fall, wenn für  jeden Zustand
-  ||       qi<-Q und jedes Zeichen z<-Sigma GENAU EIN Übergang delta (qi,z)<-Q
-  ||       existiert.
+  ||       ist True geliefert.
+
+  isnea :: automat -> bool
+  || Vor.: -
+  || Erg.: G.d.w. in 'isnea a' a  ein nicht-deterministischer, endlicher Auto-
+  ||       mat ist, ist True geliefert.
+
+  isneaE :: automat -> bool
+  || Vor.: -
+  || Erg.: G.d.w. in 'isneaE a' a ein nicht-deterministischer, endlicher Auto-
+  ||       mat mit epsilon-Übergängen ist, ist True geliefert.
 
   accepts :: automat -> word -> bool
   || Vor.: Das Wort ist in der Kleenschen Hülle des Automatenalphabets enthal-

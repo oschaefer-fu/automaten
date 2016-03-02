@@ -1,5 +1,5 @@
 || ======================= Miranda-Paket 'automatentools' ====================
-|| (c) Oliver Schäfer                                             Februar 2016
+|| (c) Oliver Schäfer                                        Februar/März 2016
 || ===========================================================================
 
 deleps :: automat -> automat
@@ -34,5 +34,22 @@ reduce :: automat -> automat
 || Erg.: In 'reduce a' ist ein zu a äquivalenter, d.h. ein die gleiche Sprache
 ||       akzeptierender Automat geliefert, der um die in  a unerreichbaren Zu-
 ||       stände verkürzt ist.
+
+writeToMirandaFile :: automat -> [char] -> [char] -> bool -> [sys_message]
+|| Vor.: Der aktuelle Benutzer hat Schreibrechte im aktuellen Verzeichnis.
+|| Erg.: In 'writeToFile a name file  mtype' ist  eine Datei angelegt, die die
+||       Miranda-Definition des Automaten a, gebunden an die  Variable mit dem
+||       Namen name enthält. Für mtype = True ist  der Datei noch  die zum Im-
+||       port des Automatenpakets notwendige include-Anweisung  vorangestellt,
+||       so dass die Datei direkt in Miranda weiterverarbeitet werden kann.
+
+showConfigurations :: automat -> word -> [char]
+|| Vor.: In 'showConfigurations a w' ist  w  in  der  Kleene'schen Hülle von a
+||       enthalten.
+|| Erg.: Eine  Zeichenkette,  die alle  Konfigurationen (qi,wi)  beginnend bei
+||       der Startkonfiguration (q0,w) und  endend  bei allen  Konfigurationen
+||       (qi,e) mit dem leeren Wort e(psilon).
+||       Konfigurationen (qi,e) mit qi<-F sind  dabei grün,  solche mit qi~<-F
+||       rot dargestellt.
 
 %insert "automatentoolsimpl.m"

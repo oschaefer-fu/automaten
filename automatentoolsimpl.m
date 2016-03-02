@@ -1,8 +1,92 @@
 || -----------------------------
 || (c) Oliver Schäfer, FU-Berlin
 || -----------------------------
+%include <lwb/ansiseq>
 %include <lwb/automaten>
 %export unreachable reduce deleps equivalent powersetConstr minimize
+        writeToMirandaFile showConfigurations
+
+showConfigurations a w
+  = headline ++ "\n" ++ sC [] w (map fst (startFrom a 0 "")) ++ bottomline
+    where
+    sColor = Gelb
+    iColor = Hellblau
+    aColor = Gruen
+    wColor = Violett
+    width = max2 (#w) (#"Restwort")
+    fill  = #"Restwort" - #w, if #w <#"Restwort"
+          = 0,                otherwise
+    zText = "aktueller Zustand",                                     if isdea a
+          = "aktuelle Zustände",                                     if isnea a \/ isneaE a
+          = error "undefinierter Automatentyp (showConfigurations)", otherwise
+    headline = rjustify (width+3) "Restwort" ++ " | " ++ zText ++ "\n" ++
+               "   " ++ rep width '-' ++ "-+-" ++ rep 17 '-'
+    bottomline = "   " ++ rep width '-' ++ "-+-" ++ rep 17 '-' ++ "\n" ++
+                 "   " ++ cjustify (width+20+3*#(vfaerben "" Weiss)) || ANSI-Sequenzen zählen mit!!!
+                          (vfaerben "Start"  sColor ++ " - " ++
+                           vfaerben "Inner"  iColor ++ " - " ++
+                           vfaerben "Accept" aColor) ++ "\n"
+    sC zs' zs     []  = []
+    sC zs' []     qs' = rep (fill+3) ' ' ++ vfaerben zs' wColor ++           " | " ++ showStates False qs' ++ "\n"
+    sC zs' (z:zs) qs' = rep (fill+3) ' ' ++ vfaerben zs' wColor ++ (z:zs) ++ " | " ++ showStates True  qs' ++ "\n" ++
+                        sC (zs' ++ [z]) zs qs''
+                        where
+                        qs'' = (sort . mkset . concat) [map fst (startFrom a q [z])|q<-qs']
+    showStates t xs
+      = f (showStates' t xs)
+        where
+        f = ("{"++) . (++"}"),                                       if isnea a \/ isneaE a
+          = id,                                                      if isdea a
+          = error "undefinierter Automatentyp (showConfigurations)", otherwise
+        showStates' t     []       = []
+        showStates' True  [x]      = vfaerben ("q" ++ shownum x) (color x t)
+        showStates' True  (x:y:xs) = vfaerben ("q" ++ shownum x) (color x t) ++ "," ++ showStates' t (y:xs)
+        showStates' False [x]      = hfaerben ("q" ++ shownum x) (color x t)
+        showStates' False (x:y:xs) = hfaerben ("q" ++ shownum x) (color x t) ++ "," ++ showStates' t (y:xs)
+        color x t = sColor,    if  t &  styp x = Start
+                  = aColor,    if  t &  styp x = Accept
+                  = iColor,    if  t &  styp x = Inner
+                  = Rot,       if ~t & (styp x = Inner \/ styp x = Start)
+                  = Gruen,     if ~t &  styp x = Accept
+        styp x = (snd . hd) [q|q<-states a;fst q = x]
+
+writeToMirandaFile a name file mtype
+  = [Tofile file astring]
+    where
+    astring = preambel ++
+              name ++ " = " ++ atype ++ qsshow (show (states a)) ++ "\n" ++
+              tab1 ++ "   " ++ tab2  ++ show   (sigma a)         ++ "\n" ++
+              tab1 ++ "   " ++ tab2  ++ tsshow (tsort' (transitions a))
+    tab1 = rep (#name) ' '
+    tab2 = rep (#atype) ' '
+    qsshow []     = error "Automat ohne Zustände (writeToMirandaFile)"
+    qsshow (c:cs) = qsshow' (c:cs) []
+    qsshow' []           akk = akk
+    qsshow' (')':',':cs) akk = qsshow' cs (akk ++ "),\n" ++ tab1 ++ "   " ++ tab2 ++ " ")
+    qsshow' (c:cs)       akk = qsshow' cs (akk ++ [c])
+    tsshow []     = error "Automat ohne Übergänge (writeToMirandaFile)"
+    tsshow (t:ts) = (("["++) . (++"]")) (tsshow' ts t)
+    tsshow' [] t = tshow t
+    tsshow' ((qi,zs,qj):ts) (qi',zs',qj')
+      = tsshow' ts (qi',zs'++zs,qj'),                        if qi = qi' & qj  = qj'
+      = tshow (qi',zs',qj') ++ "," ++ tsshow' ts (qi,zs,qj), if qi = qi' & qj ~= qj'
+      = tshow (qi',zs',qj') ++ ",\n" ++ tab1 ++ "   " ++ tab2 ++ " " ++ tsshow' ts (qi,zs,qj), otherwise
+    tshow (x,y,z) = "(" ++ shownum x ++ "," ++ tochar y ++ "," ++ shownum z ++ ")"
+    tochar x = [decode 34] ++ x ++ [decode 34]
+    preambel = "%include <lwb/automaten>\n\n", if mtype
+             = "",                             otherwise
+    atype = "dea ",                                                if isdea a
+          = "nea ",                                                if isnea a
+          = "neaE ",                                               if isneaE a
+          = error "Automatentyp undefiniert (writeToMirandaFile)", otherwise
+
+tsort' = foldr tinsert []
+         where
+         tinsert (qi,z,qj) []                = [(qi,z,qj)]
+         tinsert (qi,z,qj) ((qi',z',qj'):ts) = (qi,z,qj):(qi',z',qj'):ts,         if qi < qi'
+                                             = (qi,z,qj):(qi',z',qj'):ts,         if qi = qi' & qj < qj'
+                                             = (qi,z,qj):(qi',z',qj'):ts,         if qi = qi' & qj = qj' & z < z'
+                                             = (qi',z',qj'):tinsert (qi,z,qj) ts, otherwise
 
 powersetConstr = powersetConstr' . deleps
 powersetConstr' a
