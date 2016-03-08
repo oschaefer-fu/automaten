@@ -7,8 +7,6 @@
         writeToMirandaFile showConfigurations
         regexpAND regexpOR regexpSTAR
 
-|| Problem: Durch die zyklische epsilon-Hülle terminiert die Abarbeitung eines
-|| Wortes nicht -> TODO: Implementierung in automatenimpl.m prüfen. (01.03.16)
 regexpSTAR a
   = neaE qs' zs' ts'
     where
