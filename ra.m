@@ -6,30 +6,46 @@ with
 
   || Kombinierer von RAs
   raOr    :: ra -> ra -> ra
+  || RA:   a -> b -> a|b
   || Vor.: keine
-  || Erg.: In 'regexOR a b' ist ein NEAe geliefert, der all die  Wörter w akzep-
-  ||       tiert, die von a ODER von b akzeptiert werden. Das Alphabet des Auto-
-  ||       maten ist die Vereinigung der Alphabete von a und b.
+  || Erg.: In 'raOr a b' ist ein RA geliefert, der auf all die Wörter w passt,
+  ||       auf die a ODER b passt.
 
   raAnd   :: ra -> ra -> ra
+  || RA:   a -> b -> ab
   || Vor.: keine
-  || Erg.: In 'regexAND a b' ist ein NEAe c geliefert, der all die Wörter vw ak-
-  ||       zeptiert, für die v von  a UND  w von b akzeptiert werden. Das Alpha-
-  ||       bet von c ist die Vereinigung der Alphabete von a und b.
+  || Erg.: In 'raAnd a b' ist ein  RA  geliefert, der  auf  all die Wörter vw
+  ||       passt, für die auf v UND b auf w passen.
 
   raStar  :: ra -> ra
+  || RA:   a -> a*
   || Vor.: keine
-  || Erg.: In 'regexSTAR a' ist ein NEAe geliefert, der beliebige - auch keinma-
-  ||       lige - Wiederholungen von  Wörtern akzeptiert, die  a akzeptiert. Das
-  ||       Alphabet des Automaten ist das gleiche wie das von a.
+  || Erg.: In 'raStar a' ist ein RA geliefert, der  auf beliebige, auch kein-
+  ||       malige Wiederholungen von Wörtern passt, auf die a passt.
+
+  raPlus  :: ra -> ra
+  || RA:   a -> a+
+  || Vor.: keine
+  || Erg.: In 'raStar a' ist ein RA geliefert, der  auf  beliebige, aber min-
+  ||       destens einmalige Wiederholungen von Wörtern passt, auf die der RA
+  ||       a passt.
+
+  ra0or1  :: ra -> ra
+  || RA:   a -> a?
+  || Vor.: keine
+  || Erg.: In 'raStar a' ist ein  RA geliefert, der  auf kein- oder einmalige
+  ||       Wiederholung von Wörtern passt, auf die a passt.
 
   matches :: ra -> [char] -> bool
   showra  :: ra -> [char]
 
-  || spezielle RAs, Spezifikation siehe Skript Seite 3-3
+  || spezielle RAs, die in RA-Implementierungen typischerweise verwendet wer-
+  || den (siehe z.B. Skript, Seite 3-3).
   alpha_  :: ra
   digit_  :: ra
   upper_  :: ra
   lower_  :: ra
+  alnum_  :: ra
+  punct_  :: ra
 
 %insert "raimpl.m"

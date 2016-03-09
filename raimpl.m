@@ -9,8 +9,16 @@ ra == (automat,[char])
 
 alpha_ = oneOf "[:alpha:]"  letters
 digit_ = oneOf "[:digits:]" digits
+alnum_ = oneOf "[:alnum:]"  (digits ++ letters)
+punct_ = oneOf "[:punct:]"  ".,:;!?"
 upper_ = oneOf "[:upper:]"  capitals
 lower_ = oneOf "[:lower:]"  small
+
+raPlus (a,n)
+  = (fst (raAnd (a,"") (raStar (a,n))), "(" ++ n ++ ")+")
+
+||ra0or1 (a,n)
+||  = (ra0or1' a, "(" ++ n ++ ")?")
 
 raStar (a,n)
   = (raStar' a, "(" ++ n ++ ")*")
@@ -71,7 +79,7 @@ raAnd (a1,n1) (a2,n2)
         ts' = tsA ++ map (shiftT n) tsB ++ [(k,"",n)|(k,Accept)<-qsA]
         shiftT x (qi,z,qj) = (qi+x,z,qj+x)
 
-matches (a,n)           = accepts a
+matches = accepts . fst
 
 || 'allOf xs' liefert einen RA, der auf die durch xs repräsentierte Zeichenkette
 || matcht
@@ -85,11 +93,11 @@ allOf name wort
                ts = [(0,zs,0),(#b,zs,#b)] ++ [(i,[b!i],i+1)|i<-[0..#b-1]]
 
 || 'oneOf xs' liefert einen RA, der auf ein beliebiges Zeichen aus xs matcht.
-oneOf name xs
+oneOf name wort
   = (nea qs zs ts, name)
     where
-    qs = [(0,Start)] ++ [(i,Accept)|i<-[1..#xs]]
+    qs = [(0,Start)] ++ [(i,Accept)|i<-[1..#wort]]
     zs = ascii
-    ts = [(0,[xs!i],i+1)|i<-[0..#xs-1]]
+    ts = [(0,[wort!i],i+1)|i<-[0..#wort-1]]
 
 showra (a,name) = name
