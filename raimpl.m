@@ -7,21 +7,65 @@
 
 ra == (automat,[char])
 
-alpha_ = oneOf "[:alpha:]"  letters
-digit_ = oneOf "[:digits:]" digits
-alnum_ = oneOf "[:alnum:]"  (digits ++ letters)
-punct_ = oneOf "[:punct:]"  ".,:;!?"
-upper_ = oneOf "[:upper:]"  capitals
-lower_ = oneOf "[:lower:]"  small
+alpha_ = choice "[:alpha:]"  letters
+digit_ = choice "[:digits:]" digits
+alnum_ = choice "[:alnum:]"  (digits ++ letters)
+punct_ = choice "[:punct:]"  ".,:;!?"
+upper_ = choice "[:upper:]"  capitals
+lower_ = choice "[:lower:]"  small
+
+raMaxN r n
+  = (fst r', "(" ++ snd r ++ "){," ++ shownum n ++ "}"), if #(snd r) > 1
+  = (fst r',        snd r ++  "{," ++ shownum n ++ "}"), otherwise
+    where
+    r' = raOr ([ra0or1 r] ++ [raAnd (rep k r)|k<-[2..n]])
+
+|| TODO, terminiert nicht
+raMinN r n
+  = (fst r', "(" ++ snd r ++ "){" ++ shownum n ++ ",}"), if #(snd r) > 1
+  = (fst r',        snd r ++  "{" ++ shownum n ++ ",}"), otherwise
+    where
+    r' = raOr [raAnd (rep k r)|k<-[n..]]
+
+raN r n
+  = (fst r', "(" ++ snd r ++ "){" ++ shownum n ++ "}"), if #(snd r) > 1
+  = (fst r',        snd r ++  "{" ++ shownum n ++ "}"), otherwise
+    where
+    r' = raAnd (rep n r)
+
+raMN r m n
+  = (fst r', "(" ++ snd r ++ "){" ++ shownum m ++ "," ++ shownum n ++ "}"), if #(snd r) > 1
+  = (fst r',        snd r ++  "{" ++ shownum m ++ "," ++ shownum n ++ "}"), otherwise
+    where
+    r' = raOr [raAnd (rep k r)|k<-[m..n]]
 
 raPlus (a,n)
-  = (fst (raAnd (a,"") (raStar (a,n))), "(" ++ n ++ ")+")
+  = (fst (raAnd [(a,""),raStar (a,n)]), "(" ++ n ++ ")+"), if #n < 2
+  = (fst (raAnd [(a,""),raStar (a,n)]),        n ++  "+"), otherwise
 
-||ra0or1 (a,n)
-||  = (ra0or1' a, "(" ++ n ++ ")?")
+ra0or1 (a,n)
+  = (ra0or1' a, "(" ++ n ++ ")?"), if #n > 1
+  = (ra0or1' a,        n ++  "?"), otherwise
+    where
+    ra0or1' a
+      = neaE qs' zs' ts'
+        where
+        qs' = map (shiftQ 1 . chgStart . chgAccept) qsA ++ [(n,Accept)]
+        qsA = states a
+        n   = max (map fst qsA) + 2
+        shiftQ x (q,t) = (q+x,t)
+        chgAccept (n,Accept) = (n,Inner)
+        chgAccept (n,t)      = (n,t)
+        chgStart  (0,Start)  = (0,Inner)
+        chgStart  (n,t)      = (n,t)
+        zs' = sigma a
+        tsA = transitions a
+        ts' = map (shiftT 1) tsA ++ [(0,"",1),(0,"",n)] ++ [(k+1,"",n)|(k,Accept)<-qsA]
+        shiftT x (qi,z,qj) = (qi+x,z,qj+x)
 
 raStar (a,n)
-  = (raStar' a, "(" ++ n ++ ")*")
+  = (raStar' a, "(" ++ n ++ ")*"), if #n > 1
+  = (raStar' a,        n ++  "*"), otherwise
     where
     raStar' a
       = neaE qs' zs' ts'
@@ -39,8 +83,8 @@ raStar (a,n)
         ts' = map (shiftT 1) tsA ++ [(0,"",1),(0,"",n),(n,"",0)] ++ [(k+1,"",n)|(k,Accept)<-qsA]
         shiftT x (qi,z,qj) = (qi+x,z,qj+x)
 
-raOr (a1,n1) (a2,n2)
-  = (raOr' a1 a2, "(" ++ n1 ++ "|" ++ n2 ++ ")")
+raOr rs
+  = (foldr1 raOr' (map fst rs), "(" ++ (concat . (intersperse "|") . (map snd)) rs ++ ")")
     where
     raOr' a b
       = neaE qs' zs' ts'
@@ -58,8 +102,8 @@ raOr (a1,n1) (a2,n2)
         ts' = map (shiftT 1) tsA ++ map (shiftT n) tsB ++ [(0,"",1),(0,"",n)]
         shiftT x (qi,z,qj) = (qi+x,z,qj+x)
 
-raAnd (a1,n1) (a2,n2)
-  = (raAnd' a1 a2, "(" ++ n1 ++ n2 ++ ")")
+raAnd rs
+  = (foldr1 raAnd' (map fst rs), (concat . (intersperse "") . (map snd)) rs)
     where
     raAnd' a b
       = neaE qs' zs' ts'
@@ -81,9 +125,16 @@ raAnd (a1,n1) (a2,n2)
 
 matches = accepts . fst
 
-|| 'allOf xs' liefert einen RA, der auf die durch xs repräsentierte Zeichenkette
-|| matcht
-allOf name wort
+all name wort
+  = (sucher wort, name)
+    where
+    sucher b = nea qs zs ts
+               where 
+               qs = [(i,Inner)|i<-[1..#b-1]] ++ [(#b,Accept)]
+               zs = ascii
+               ts = [(i,[b!i],i+1)|i<-[0..#b-1]]
+
+part name wort
   = (sucher wort, name)
     where
     sucher b = nea qs zs ts
@@ -92,12 +143,15 @@ allOf name wort
                zs = ascii
                ts = [(0,zs,0),(#b,zs,#b)] ++ [(i,[b!i],i+1)|i<-[0..#b-1]]
 
-|| 'oneOf xs' liefert einen RA, der auf ein beliebiges Zeichen aus xs matcht.
-oneOf name wort
+choice name wort
   = (nea qs zs ts, name)
     where
     qs = [(0,Start)] ++ [(i,Accept)|i<-[1..#wort]]
     zs = ascii
     ts = [(0,[wort!i],i+1)|i<-[0..#wort-1]]
 
-showra (a,name) = name
+showra = snd
+
+|| ------------------------ Hilfsfunktionen -----------------------------
+intersperse :: * -> [*] -> [*]
+intersperse x xs = (tl . concat) [[x,y]|y<-xs]
