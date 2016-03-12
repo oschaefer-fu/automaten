@@ -7,33 +7,34 @@
 
 ra == (automat,[char])
 
-alpha_ = choice "[:alpha:]"  letters
-digit_ = choice "[:digits:]" digits
-alnum_ = choice "[:alnum:]"  (digits ++ letters)
-punct_ = choice "[:punct:]"  ".,:;!?"
-upper_ = choice "[:upper:]"  capitals
-lower_ = choice "[:lower:]"  small
+alpha_ = select "[:alpha:]"  letters
+digit_ = select "[:digits:]" digits
+alnum_ = select "[:alnum:]"  (digits ++ letters)
+punct_ = select "[:punct:]"  ".,:;!?"
+upper_ = select "[:upper:]"  capitals
+lower_ = select "[:lower:]"  small
 
-raMaxN r n
+raMaxN n r
   = (fst r', "(" ++ snd r ++ "){," ++ shownum n ++ "}"), if #(snd r) > 1
   = (fst r',        snd r ++  "{," ++ shownum n ++ "}"), otherwise
     where
     r' = raOr ([ra0or1 r] ++ [raAnd (rep k r)|k<-[2..n]])
 
-|| TODO, terminiert nicht
-raMinN r n
-  = (fst r', "(" ++ snd r ++ "){" ++ shownum n ++ ",}"), if #(snd r) > 1
-  = (fst r',        snd r ++  "{" ++ shownum n ++ ",}"), otherwise
-    where
-    r' = raOr [raAnd (rep k r)|k<-[n..]]
+raMinN n r = (fst r', f (snd r))
+             where
+             f name = "(" ++ name ++ "){" ++ shownum n ++ ",}", if #name > 1
+                    =        name ++  "{" ++ shownum n ++ ",}", otherwise
+             r' = raStar r,                              if n = 0
+                = raPlus r,                              if n = 1
+                = raAnd [raAnd (rep (n-1) r), raPlus r], otherwise
 
-raN r n
+raN n r
   = (fst r', "(" ++ snd r ++ "){" ++ shownum n ++ "}"), if #(snd r) > 1
   = (fst r',        snd r ++  "{" ++ shownum n ++ "}"), otherwise
     where
     r' = raAnd (rep n r)
 
-raMN r m n
+raMN m n r
   = (fst r', "(" ++ snd r ++ "){" ++ shownum m ++ "," ++ shownum n ++ "}"), if #(snd r) > 1
   = (fst r',        snd r ++  "{" ++ shownum m ++ "," ++ shownum n ++ "}"), otherwise
     where
@@ -125,7 +126,7 @@ raAnd rs
 
 matches = accepts . fst
 
-all name wort
+compose name wort
   = (sucher wort, name)
     where
     sucher b = nea qs zs ts
@@ -134,16 +135,7 @@ all name wort
                zs = ascii
                ts = [(i,[b!i],i+1)|i<-[0..#b-1]]
 
-part name wort
-  = (sucher wort, name)
-    where
-    sucher b = nea qs zs ts
-               where 
-               qs = [(i,Inner)|i<-[1..#b-1]] ++ [(#b,Accept)]
-               zs = ascii
-               ts = [(0,zs,0),(#b,zs,#b)] ++ [(i,[b!i],i+1)|i<-[0..#b-1]]
-
-choice name wort
+select name wort
   = (nea qs zs ts, name)
     where
     qs = [(0,Start)] ++ [(i,Accept)|i<-[1..#wort]]

@@ -1,11 +1,17 @@
 abstype ra
 with
-  ||         name      zeichen
-  all     :: [char] -> [char] -> ra
-  choice  :: [char] -> [char] -> ra
-  part    :: [char] -> [char] -> ra
+  compose :: [char] -> [char] -> ra
+  || Vor.: xs enthält nur druckbare ASCII-Zeichen sowie Tabulatoren '\t' und
+  ||       Zeienendenzeichen '\n'.
+  || Erg.: In 'compose name xs' ist ein RA geliefert, der auf die Zeichenket-
+  ||       te xs passt. Der Bezeichner des RA ist name.
 
-  || Kombinierer von RAs
+  select  :: [char] -> [char] -> ra
+  || Vor.: xs enthält nur druckbare ASCII-Zeichen sowie Tabulatoren '\t' und
+  ||       Zeienendenzeichen '\n'.
+  || Erg.: In 'select name xs' ist ein RA geliefert, der auf irgendeines der
+  ||       Zeichen aus xs passt.
+
   raOr    :: [ra] -> ra
   || RA:   [r1,r1,r3,...] -> r1|r2|r3|...
   || Vor.: keine
@@ -48,37 +54,37 @@ with
   ||       Besteht der Bezeichner <r> von r  nur aus  einem  Zeichen, ist der
   ||       zeichner von 'ra0or1 r' <r>?, ansonsten (<r>)?.
 
-  raMaxN  :: ra -> num -> ra
-  || RA:   r -> n -> r{,n}
+  raMaxN  :: num -> ra -> ra
+  || RA:   n -> r -> r{,n}
   || Vor.: keine
-  || Erg.: In 'raMaxN r n' ist ein RA geliefert, der auf kein- bis maximal n-
+  || Erg.: In 'raMaxN n r' ist ein RA geliefert, der auf kein- bis maximal n-
   ||       malige Wiederholung von Wörtern passt, auf die r passt.
   ||       Besteht der Bezeichner <r> von r  nur aus  einem  Zeichen, ist der
   ||       zeichner von 'raMaxN r' <r>{,n}, ansonsten (<r>){,n}.
 
-  raMinN  :: ra -> num -> ra
-  || RA:   r -> n -> r{n,}
+  raMinN  :: num -> ra -> ra
+  || RA:   r -> r -> r{n,}
   || Vor.: keine
-  || Erg.: In 'raMaxN r n' ist ein RA  geliefert, der auf mindestens n-malige
+  || Erg.: In 'raMinN n r' ist ein RA  geliefert, der auf mindestens n-malige
   ||       Wiederholung von Wörtern passt, auf die r passt.
   ||       Besteht der Bezeichner <r> von r  nur aus  einem  Zeichen, ist der
-  ||       zeichner von 'raMaxN r' <r>{n,}, ansonsten (<r>){n,}.
+  ||       zeichner von 'raMinN r' <r>{n,}, ansonsten (<r>){n,}.
 
-  raN      :: ra -> num -> ra
-  || RA:   r -> n -> r{n}
+  raN      :: num -> ra -> ra
+  || RA:   n -> r -> r{n}
   || Vor.: keine
-  || Erg.: In 'raMaxN r n' ist ein RA  geliefert, der auf genau n-malige Wie-
-  ||       derholung von Wörtern passt, auf die r passt.
+  || Erg.: In 'raN n r' ist ein RA  geliefert, der auf genau n-malige Wieder-
+  ||       holung von Wörtern passt, auf die r passt.
   ||       Besteht der Bezeichner <r> von r  nur aus  einem  Zeichen, ist der
-  ||       zeichner von 'raMaxN r' <r>{n}, ansonsten (<r>){n}.
+  ||       zeichner von 'raN r' <r>{n}, ansonsten (<r>){n}.
 
-  raMN     :: ra -> num -> num -> ra
-  || RA:   r -> m -> n -> r{m,n}
+  raMN     :: num -> num -> ra -> ra
+  || RA:   m -> n -> r -> r{m,n}
   || Vor.: keine
-  || Erg.: In 'raMaxN r n' ist ein  RA  geliefert,  der auf mindestens n- und
+  || Erg.: In 'raMN m n r' ist ein  RA  geliefert,  der auf mindestens n- und
   ||       höchstens m-malige Wiederholung von Wörtern passt, auf die r passt.
   ||       Besteht der Bezeichner <r> von r  nur aus  einem  Zeichen, ist der
-  ||       zeichner von 'raMaxN r' <r>{m,n}, ansonsten (<r>){m,n}.
+  ||       zeichner von 'raMN r' <r>{m,n}, ansonsten (<r>){m,n}.
 
   matches :: ra -> [char] -> bool
   showra  :: ra -> [char]
@@ -88,19 +94,14 @@ with
 
   alpha_  :: ra
   ||      RA, der auf ein beliebigen Buchstaben matcht.
-
   digit_  :: ra
   ||      RA, der auf eine beliebige Dezimalziffer matcht.
-
   upper_  :: ra
   ||      RA, der auf einen beliebigen Großbuchstaben matcht (ohne Umlaute).
-
   lower_  :: ra
   ||      RA, der auf einen beliebigen Kleinbuchstaben matcht (ohne Umlaute).
-
   alnum_  :: ra
   ||      RA, der auf einen beliebigen Buchstaben oder Dezimalziffer matcht.
-
   punct_  :: ra
   ||      RA, der auf ein Zeichen aus ".,:;?!" matcht.
 
