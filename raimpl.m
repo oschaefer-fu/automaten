@@ -22,31 +22,31 @@ raMaxN n r
 
 raMinN n r = (fst r', f (snd r))
              where
-             f name = "(" ++ name ++ "){" ++ shownum n ++ ",}", if #name > 1
-                    =        name ++  "{" ++ shownum n ++ ",}", otherwise
+             f name =        name ++  "{" ++ shownum n ++ ",}", if #name < 2 \/ bekannt name
+                    = "(" ++ name ++ "){" ++ shownum n ++ ",}", otherwise
              r' = raStar r,                              if n = 0
                 = raPlus r,                              if n = 1
                 = raAnd [raAnd (rep (n-1) r), raPlus r], otherwise
 
 raN n r
-  = (fst r', "(" ++ snd r ++ "){" ++ shownum n ++ "}"), if #(snd r) > 1
-  = (fst r',        snd r ++  "{" ++ shownum n ++ "}"), otherwise
+  = (fst r',        snd r ++  "{" ++ shownum n ++ "}"), if #(snd r) < 2 \/ bekannt (snd r)
+  = (fst r', "(" ++ snd r ++ "){" ++ shownum n ++ "}"), otherwise
     where
     r' = raAnd (rep n r)
 
 raMN m n r
-  = (fst r', "(" ++ snd r ++ "){" ++ shownum m ++ "," ++ shownum n ++ "}"), if #(snd r) > 1
-  = (fst r',        snd r ++  "{" ++ shownum m ++ "," ++ shownum n ++ "}"), otherwise
+  = (fst r',        snd r ++  "{" ++ shownum m ++ "," ++ shownum n ++ "}"), if #(snd r) < 2 \/ bekannt (snd r)
+  = (fst r', "(" ++ snd r ++ "){" ++ shownum m ++ "," ++ shownum n ++ "}"), otherwise
     where
     r' = raOr [raAnd (rep k r)|k<-[m..n]]
 
-raPlus (a,n)
-  = (fst (raAnd [(a,""),raStar (a,n)]), "(" ++ n ++ ")+"), if #n < 2
-  = (fst (raAnd [(a,""),raStar (a,n)]),        n ++  "+"), otherwise
+raPlus (r,name)
+  = (fst (raAnd [(r,""),raStar (r,name)]),        name ++  "+"), if #name < 2 \/ bekannt name
+  = (fst (raAnd [(r,""),raStar (r,name)]), "(" ++ name ++ ")+"), otherwise
 
-ra0or1 (a,n)
-  = (ra0or1' a, "(" ++ n ++ ")?"), if #n > 1
-  = (ra0or1' a,        n ++  "?"), otherwise
+ra0or1 (r,name)
+  = (ra0or1' r,        name ++  "?"), if #name < 2 \/ bekannt name
+  = (ra0or1' r, "(" ++ name ++ ")?"), otherwise
     where
     ra0or1' a
       = neaE qs' zs' ts'
@@ -64,9 +64,9 @@ ra0or1 (a,n)
         ts' = map (shiftT 1) tsA ++ [(0,"",1),(0,"",n)] ++ [(k+1,"",n)|(k,Accept)<-qsA]
         shiftT x (qi,z,qj) = (qi+x,z,qj+x)
 
-raStar (a,n)
-  = (raStar' a, "(" ++ n ++ ")*"), if #n > 1
-  = (raStar' a,        n ++  "*"), otherwise
+raStar (r,name)
+  = (raStar' r,        name ++  "*"), if #name < 2 \/ bekannt name
+  = (raStar' r, "(" ++ name ++ ")*"), otherwise
     where
     raStar' a
       = neaE qs' zs' ts'
@@ -126,8 +126,9 @@ raAnd rs
 
 matches = accepts . fst
 
-compose name wort
-  = (sucher wort, name)
+compose name xs
+  = (sucher xs, name), if name ~= ""
+  = (sucher xs, xs),   otherwise
     where
     sucher b = nea qs zs ts
                where 
@@ -135,15 +136,23 @@ compose name wort
                zs = ascii
                ts = [(i,[b!i],i+1)|i<-[0..#b-1]]
 
-select name wort
-  = (nea qs zs ts, name)
+select name xs
+  = (nea qs zs ts, name),  if name ~= ""
+  = (nea qs zs ts, name'), otherwise
     where
-    qs = [(0,Start)] ++ [(i,Accept)|i<-[1..#wort]]
+    name' = (("("++) . (++")")) (intersperse '|' xs), if #xs > 1
+          = xs, otherwise
+    qs = [(0,Start)] ++ [(i,Accept)|i<-[1..#xs]]
     zs = ascii
-    ts = [(0,[wort!i],i+1)|i<-[0..#wort-1]]
+    ts = [(0,[xs!i],i+1)|i<-[0..#xs-1]]
 
 showra = snd
 
 || ------------------------ Hilfsfunktionen -----------------------------
 intersperse :: * -> [*] -> [*]
 intersperse x xs = (tl . concat) [[x,y]|y<-xs]
+
+bekannt :: [char] -> bool
+bekannt name = True,  if hd name = '[' & last name = ']'
+             = True,  if hd name = '(' & last name = ')'
+             = False, otherwise

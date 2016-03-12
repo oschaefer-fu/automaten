@@ -1,16 +1,20 @@
 abstype ra
 with
   compose :: [char] -> [char] -> ra
-  || Vor.: xs enthält nur druckbare ASCII-Zeichen sowie Tabulatoren '\t' und
+  || Vor.: xs enthält nur druckbare  ASCII-Zeichen sowie Tabulatoren '\t' und
   ||       Zeienendenzeichen '\n'.
   || Erg.: In 'compose name xs' ist ein RA geliefert, der auf die Zeichenket-
-  ||       te xs passt. Der Bezeichner des RA ist name.
+  ||       te xs passt.
+  ||       Für name ~= "" ist der Bezeichner  des RA der Wert von name, sonst
+  ||       xs.
 
   select  :: [char] -> [char] -> ra
-  || Vor.: xs enthält nur druckbare ASCII-Zeichen sowie Tabulatoren '\t' und
+  || Vor.: xs enthält nur druckbare ASCII-Zeichen  sowie Tabulatoren '\t' und
   ||       Zeienendenzeichen '\n'.
-  || Erg.: In 'select name xs' ist ein RA geliefert, der auf irgendeines der
+  || Erg.: In 'select name xs' ist ein  RA geliefert, der auf irgendeines der
   ||       Zeichen aus xs passt.
+  ||       Für  name ~= "" ist der Bezeichner des RA der Wert von name, sonst
+  ||       (x0|x1|x2|...|xn-1) mit name = [x0,x1,x2,...,xn-1].
 
   raOr    :: [ra] -> ra
   || RA:   [r1,r1,r3,...] -> r1|r2|r3|...
@@ -87,10 +91,15 @@ with
   ||       zeichner von 'raMN r' <r>{m,n}, ansonsten (<r>){m,n}.
 
   matches :: ra -> [char] -> bool
+  || Vor.: keine
+  || Erg.: In 'matches r xs' ist genau dann True geliefert, wenn der RA r auf
+  ||       xs passt.
+
   showra  :: ra -> [char]
+  || intern verwendet, gibt den Bezeichner des RA auf der Konsole aus.
 
   || spezielle RAs, die in RA-Implementierungen typischerweise verwendet wer-
-  || den (siehe z.B. Skript, Seite 3-3).
+  || den (siehe auch Skript zur Theoretischen Informatik, Seite 3-3).
 
   alpha_  :: ra
   ||      RA, der auf ein beliebigen Buchstaben matcht.
