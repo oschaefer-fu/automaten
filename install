@@ -8,8 +8,9 @@
 
 LWBMIRALIB=/usr/lib/miralib/lwb
 
-MAKELIST="automaten.m automatentools.m automatentoolsimpl.m ansiseq.m"
-FILELIST="automaten*.m ansiseq.m"
+MAKELIST="automaten.m automatentools.m automatentoolsimpl.m ansiseq.m ra.m"
+FILELIST="automaten*.m ansiseq.m ra*.m"
+OWNLIST="automaten* ansiseq* ra*"
 
 if [ ! -d $LWBMIRALIB ]; then
   if [ $UID != 0 ]; then
@@ -31,6 +32,6 @@ fi
 cp $FILELIST $LWBMIRALIB/
 cd $LWBMIRALIB
 mira -make $MAKELIST
-chown lewein:lewein automaten* ansiseq*
+chown lewein:lewein $OWNLIST
 
-echo "installation des Automaten-Pakets erfolgreich!"
+echo "installation des Automaten- und RA-Pakets erfolgreich!"
