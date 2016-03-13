@@ -1,6 +1,8 @@
 # automaten
 Miranda-Paket für endliche Akzeptoren in der LWB Informatik an der FU-Berlin
 
+    Version 0.3 von So 13. Mär 11:08:59 CET 2016
+
 Installationsanweisungen:
 
 Es gibt zwei Wege, das Automatenpaket zu installieren:
@@ -29,7 +31,12 @@ Es gibt zwei Wege, das Automatenpaket zu installieren:
 
           mira -make /usr/lib/miralib/lwb/*.m
 
-    (d) Nun kann in jeder Miranda-Datei der ADT 'automat' verwendet werden, indem
-        man ihn inkludiert mittels der Anweisung:
+Nach Abschluss der installation können in jeder Miranda-Datei die ADTs 'automat'
+und 'ra' verwendet werden, indem man sie inkludiert mittels einer der Anweisungen
 
-          %include <lwb/automaten>
+     %include <lwb/automaten>
+     %include <lwb/ra>
+
+Zusätzliche Automaten-Funktionen erhält man durch
+
+     %include <lwb/automatentools>

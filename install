@@ -9,7 +9,7 @@
 LWBMIRALIB=/usr/lib/miralib/lwb
 
 MAKELIST="automaten.m automatentools.m automatentoolsimpl.m ansiseq.m ra.m"
-FILELIST="automaten*.m ansiseq.m ra*.m"
+FILELIST="automaten*.m ansiseq.m ra*.m README.md"
 OWNLIST="automaten* ansiseq* ra*"
 
 if [ ! -d $LWBMIRALIB ]; then
