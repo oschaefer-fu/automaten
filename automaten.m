@@ -181,6 +181,10 @@ with
   ||       Ausgabe ist in Tabellenform erfolgt, die Tabellenköpfe sind die den
   ||       Automaten zugeordneten Zeichenketten.
 
+  version :: [char]
+  || Vor.: keine
+  || Erg.: Ein Informationstext zur aktuellen Versionsnummer ist geliefert.
+
   showautomat :: automat -> [char]
   || Vor.: keine
   || Erg.: Der Automat ist als Übergangstabelle auf dem Bildschirm  angezeigt.

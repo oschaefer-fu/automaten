@@ -1,11 +1,13 @@
-|| ------------------------------------------------
-|| Reguläre Ausdrücke (c) Oliver Schäfer, März 2016
-|| ------------------------------------------------
+|| ---------------------------------------------------
+|| Reguläre Ausdrücke (c) Oliver Schäfer, WS 2015/2016
+|| ---------------------------------------------------
 
-%include <lwb/automaten>
+%include <lwb/automaten> nea/nea dea/dea neaE/neaE automatenVersion/version
 %include <lwb/automatentools>
 
 ra == (automat,[char])
+
+version = automatenVersion
 
 alpha_ = select "[:alpha:]"  letters
 digit_ = select "[:digits:]" digits

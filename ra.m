@@ -106,8 +106,9 @@ with
   showra  :: ra -> [char]
   || intern verwendet, gibt den Bezeichner des RA auf der Konsole aus.
 
-  || spezielle RAs, die in RA-Implementierungen typischerweise verwendet wer-
-  || den (siehe auch Skript zur Theoretischen Informatik, Seite 3-3).
+  version :: [char]
+  || Vor.: keine
+  || Erg.: Ein Informationstext zur aktuellen Versionsnummer ist geliefert.
 
   alpha_  :: ra
   ||      RA, der auf ein beliebigen Buchstaben matcht.

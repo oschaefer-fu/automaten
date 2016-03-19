@@ -8,6 +8,10 @@
 automat == ([state],[[character]],[transition],[state],state,atyp)
 atyp ::= DEA | NEA | NEAe
 
+version = drop 4 (lines (read readme)!3)
+          where
+          readme = "/usr/lib/miralib/lwb/README.md"
+
 isdea a = sort [(qi,z)|(qi,ti)<-qs;z<-zs] = sort [(qi,z)|(qi,z,qj)<-ts]
           where (qs,zs,ts,fs,q0,t) = a
 
