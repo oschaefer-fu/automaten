@@ -2,7 +2,7 @@ abstype ra
 with
   compose :: [char] -> [char] -> ra
   || Vor.: xs enthält nur druckbare  ASCII-Zeichen sowie Tabulatoren '\t' und
-  ||       Zeienendenzeichen '\n'.
+  ||       Zeichenendenzeichen '\n'.
   || Erg.: In 'compose name xs' ist ein RA geliefert, der auf die Zeichenket-
   ||       te xs passt.
   ||       Für name ~= "" ist der Bezeichner  des RA der Wert von name, sonst
@@ -94,6 +94,14 @@ with
   || Vor.: keine
   || Erg.: In 'matches r xs' ist genau dann True geliefert, wenn der RA r auf
   ||       xs passt.
+
+  showMatches :: [(ra,[char])] -> [[char]] -> [char]
+  || Vor.: keine
+  || Erg.: In 'showMatches rss wss' ist für jeden RA r<-map fst rss und  jede
+  ||       Zeichenkette  w<-zss getestet,  ob w auf r  passt und das Ergebnis
+  ||       dieser Auswertung auf dem Bildschirm  ausgegeben. Die  Ausgabe ist
+  ||       in Tabellenform erfolgt, die Tabellenköpfe sind die den  RAs zuge-
+  ||       ordneten Zeichenketten.
 
   showra  :: ra -> [char]
   || intern verwendet, gibt den Bezeichner des RA auf der Konsole aus.

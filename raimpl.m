@@ -148,6 +148,24 @@ select name xs
 
 showra = snd
 
+showMatches ads ws
+  = "   " ++ pl  "Zeichenkette" ++ " | " ++  ds            ++ "\n" ++
+    "   " ++ rep ml '-'         ++ "-+-" ++  rep (#ds) '-' ++ "\n" ++
+    showMatches' as ws pl pr
+    where
+    as = map fst ads
+    ds = concat (map (pr . snd) ads)
+    ml = max2 (max (map (#) ws)) (#"Zeichenkette")
+    mr = max2 (#"nein") (max (map ((#) . snd) ads))
+    pl = rjustify ml
+    pr = (" "++) . (++" ") . (ljustify mr)
+    showMatches' as []     pl pr = []
+    showMatches' as (w:ws) pl pr
+      = "   " ++ pl w ++ " | " ++ concat (map (pr . f) as) ++ "\n" ++ showMatches' as ws pl pr
+        where
+        f a = "ja  ", if matches a w
+            = "nein",   otherwise
+
 || ------------------------ Hilfsfunktionen -----------------------------
 intersperse :: * -> [*] -> [*]
 intersperse x xs = (tl . concat) [[x,y]|y<-xs]
