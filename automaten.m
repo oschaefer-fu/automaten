@@ -1,5 +1,5 @@
 || ========================= Miranda-Paket 'automaten' =======================
-|| (c) Oliver Schäfer                                         13. Februar 2016
+|| (c) Oliver Schäfer                                             WS 2015/2016
 || ===========================================================================
 || Erstellt in  Anlehnung  an das GO-Paket 'automaten'  aus  der Vorlesung zur
 || Theoretischen Informatik (SS 2014), um nach Umstellung der Kursstruktur von
