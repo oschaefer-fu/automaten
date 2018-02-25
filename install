@@ -4,13 +4,13 @@
 # im Miranda-Systemverzeichnis - es muss bei der ersten Installation
 # als root ausgeführt werden, sonst genügen Standard-Benutzerrechte.
 #
-# (c) Oliver Schäfer, FU-Berlin, im Februar 2016
+# (c) Oliver Schäfer, FU-Berlin, im Februar 2018
 
 LWBMIRALIB=/usr/lib/miralib/lwb
 
-MAKELIST="automaten.m automatentools.m automatentoolsimpl.m ansiseq.m ra.m"
-FILELIST="automaten*.m ansiseq.m ra*.m README.md"
-OWNLIST="automaten* ansiseq* ra*"
+MAKELIST="automaten.m automatentools.m automatentoolsimpl.m ansiseq.m ra.m loop.m while.m goto.m"
+FILELIST="automaten*.m ansiseq.m ra*.m README.md loop.m while.m goto.m"
+OWNLIST="automaten* ansiseq* ra* loop.m goto.m while.m"
 
 if [ ! -d $LWBMIRALIB ]; then
   if [ $UID != 0 ]; then
@@ -34,4 +34,4 @@ cd $LWBMIRALIB
 mira -make $MAKELIST
 chown lewein:lewein $OWNLIST
 
-echo "installation des Automaten- und RA-Pakets erfolgreich!"
+echo "installation des Automaten- RA-Paket und Berechenbarkeitpakets erfolgreich!"

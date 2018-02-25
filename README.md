@@ -1,7 +1,9 @@
 # automaten
 Miranda-Paket für endliche Akzeptoren in der LWB Informatik an der FU-Berlin
+Zusätzlich werden Miranda-Pakete zur farbigen Darstellung von Text in der Shell
+und zur Berechenbarkeit mit LOOP/WHILE und GOTO-Sprachen hinzugefügt.
 
-    Version 0.31 von Sa 19. Mär 20:39:52 CET 2016
+    Version 0.4 von So 25. Feb 15:32:52 CET 2018
 
 Installationsanweisungen:
 
