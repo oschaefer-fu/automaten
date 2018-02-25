@@ -1,5 +1,5 @@
 || ========================= Miranda-Paket 'automaten' =======================
-|| (c) Oliver Schäfer                                             WS 2015/2016
+|| (c) Oliver Schäfer                                              2015 - 2018
 || ===========================================================================
 || Erstellt in  Anlehnung  an das GO-Paket 'automaten'  aus  der Vorlesung zur
 || Theoretischen Informatik (SS 2014), um nach Umstellung der Kursstruktur von
@@ -48,12 +48,23 @@ ascii      = letters ++ digits ++ whitespace ++ interpunkt ++ math
 || standsübergangsfunktion delta ist eine Menge solcher Übergänge.
 || Da auch nichtdeterministische  endliche Automaten implementiert werden sol-
 || len können, ist das a des Tripels kein Zeichen, sondern eine Liste von Zei-
-|| chen. So können auch leere (epsilon-) bzw. mehrdeutige Übergänge realisiert
-|| werden. Für DEAs sind Zeichenfolgen einelementig, also z.B. ['a'] = "a".
+|| chen. So können auch leere (epsilon-) Übergänge realisiert oder komfortabel
+|| Übergänge zusammengefasst werden.
+|| Für DEAs sind Zeichenfolgen einelementig, also z.B. ['a'] = "a".
 transition == (num,[character],num)
-|| Beispiele: (1,"a",2)  typischer DEA-Übergang (auch bei NEAs möglich)
-||            (1,"01",2) mehrdeutiger Übergang  (nur NEA)
-||            (1,"",2)   Epsilon-Übergang       (nur NEAeps)
+|| Beispiele:
+|| (1) Standard-Übergang:                                            (1,"a",2)
+||     Erläuterung: typischer DEA-Übergang
+||                  auch bei NEA möglich
+|| (2) Kurzform für mehrere Übergänge:                              (1,"01",2)
+||     Erläuterung: ersetzt (1,"0",2),(1,"1",2)
+||                  auch bei DEA möglich
+|| (3) Mehrdeutiger Übergang:                              (1,"0",2),(1,"0",1)
+||     Erläuterung: Beispiel hier (q_1,'0') -> {q1_q2}
+||                  nur bei NEA oder NEAeps möglich
+|| (4) Epsilon-Übergang:                                              (1,"",2)
+||     Erläuterung: Übergang ohne Konsumierung eines Zeichens
+||                  nur bei NEAeps möglich
 
 abstype automat
 with
