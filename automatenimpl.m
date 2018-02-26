@@ -44,6 +44,7 @@ newAutomat t qs zs ts
 accepts a ws = or ((map ((=Accept) . snd)) (startFrom a 0 ws))
 
 startFrom a n ws
+  = error "Automat ist kein DEA",                          if ~isdea a & t = DEA
   = error "Automat ohne Endzustand",                       if fs = []
   = error "Angegebener Zustand existiert nicht",           if ~member (map fst qs) n
   = error "Eingegebenes Wort nicht in Kleene'scher Hülle", if ~inKleen (split ws) zs

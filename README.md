@@ -1,7 +1,7 @@
 # automaten
 Miranda-Paket für endliche Akzeptoren in der LWB Informatik an der FU-Berlin
 
-    Version 0.31 von Sa 19. Mär 20:39:52 CET 2016
+    Version 0.41 von Mo 26. Feb 10:00:41 CET 2018
 
 Installationsanweisungen:
 
